@@ -22,8 +22,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark">
-      <div className="min-h-screen bg-gradient-to-b from-background to-background/80 pb-20">
-        <main className="container max-w-md mx-auto p-4 pb-24">{children}</main>
+      <div className="min-h-screen bg-gradient-to-b from-background to-background/80 pb-32">
+        <main className="container max-w-md mx-auto p-4 pb-32">{children}</main>
         <BottomNav currentPath={pathname} />
       </div>
     </ThemeProvider>

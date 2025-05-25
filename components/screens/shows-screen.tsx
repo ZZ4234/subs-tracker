@@ -3,58 +3,51 @@
 import { useEffect, useState } from "react"
 import { Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import AddShowDialog from "@/components/add-show-dialog"
+import AdManager from "@/components/ads/ad-manager"
 import type { Service, Show } from "@/lib/types"
-import { getServicesAction, getShowsAction, createShowAction, deleteShowAction } from "@/app/actions"
+import { trackShowAdded, trackPageView } from "@/lib/analytics"
 
 export default function ShowsScreen() {
   const [services, setServices] = useState<Service[]>([])
   const [shows, setShows] = useState<Show[]>([])
   const [isAddShowOpen, setIsAddShowOpen] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    loadData()
+    // Track page view
+    trackPageView("shows_screen")
+
+    // Load data from localStorage on component mount
+    const savedServices = localStorage.getItem("subscriptions")
+    const savedShows = localStorage.getItem("watchingShows")
+
+    if (savedServices) {
+      setServices(JSON.parse(savedServices))
+    }
+
+    if (savedShows) {
+      setShows(JSON.parse(savedShows))
+    }
   }, [])
 
-  const loadData = async () => {
-    try {
-      setLoading(true)
-      const [servicesData, showsData] = await Promise.all([getServicesAction(), getShowsAction()])
+  useEffect(() => {
+    // Save shows data to localStorage whenever it changes
+    localStorage.setItem("watchingShows", JSON.stringify(shows))
+  }, [shows])
 
-      setServices(servicesData)
-      setShows(showsData)
-      setError(null)
-    } catch (err) {
-      console.error("Error loading data:", err)
-      setError("Failed to load data")
-    } finally {
-      setLoading(false)
-    }
+  const addShow = (show: Show) => {
+    setShows([...shows, show])
+    setIsAddShowOpen(false)
+
+    // Track show addition
+    const service = services.find((s) => s.id === show.serviceId)
+    trackShowAdded(show.title, service?.name || "Unknown Service")
   }
 
-  const addShow = async (show: Omit<Show, "id">) => {
-    try {
-      const newShow = await createShowAction(show)
-      setShows([newShow, ...shows])
-      setIsAddShowOpen(false)
-    } catch (err) {
-      console.error("Error adding show:", err)
-      setError("Failed to add show")
-    }
-  }
-
-  const removeShow = async (id: string) => {
-    try {
-      await deleteShowAction(id)
-      setShows(shows.filter((show) => show.id !== id))
-    } catch (err) {
-      console.error("Error removing show:", err)
-      setError("Failed to remove show")
-    }
+  const removeShow = (id: string) => {
+    setShows(shows.filter((show) => show.id !== id))
   }
 
   // Helper function to get service name by ID
@@ -83,38 +76,12 @@ export default function ShowsScreen() {
     return "bg-violet-600"
   }
 
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <div className="flex flex-col items-center justify-center py-6">
-          <h1 className="text-2xl font-bold mb-1">Your Shows</h1>
-          <p className="text-muted-foreground">Loading your shows...</p>
-        </div>
-        <div className="animate-pulse space-y-4">
-          <div className="h-20 bg-muted rounded-lg"></div>
-          <div className="h-20 bg-muted rounded-lg"></div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col items-center justify-center py-6">
         <h1 className="text-2xl font-bold mb-1">Your Shows</h1>
         <p className="text-muted-foreground">Track what you're watching</p>
       </div>
-
-      {error && (
-        <Card className="border-red-200 bg-red-50 dark:bg-red-900/20">
-          <CardContent className="pt-6">
-            <p className="text-red-600 dark:text-red-400">{error}</p>
-            <Button onClick={loadData} variant="outline" size="sm" className="mt-2">
-              Retry
-            </Button>
-          </CardContent>
-        </Card>
-      )}
 
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold">All Shows</h2>
@@ -169,6 +136,19 @@ export default function ShowsScreen() {
           ))}
         </div>
       )}
+
+      {/* Moved ads to bottom */}
+      <div className="space-y-4 pt-8 border-t border-border">
+        <div className="text-center">
+          <h3 className="text-lg font-semibold mb-2">Discover New Content</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Find shows and manage your streaming subscriptions better
+          </p>
+        </div>
+
+        <AdManager placement="between-services" />
+        <AdManager placement="home-bottom" />
+      </div>
 
       <AddShowDialog open={isAddShowOpen} onOpenChange={setIsAddShowOpen} onAdd={addShow} services={services} />
     </div>

@@ -27,4 +27,5 @@ export interface PopularService {
   monthlyCost: number
   description?: string
   logoUrl?: string
+  availability?: string[] // Array of country codes where service is available
 }

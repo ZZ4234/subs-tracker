@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import AdManager from "@/components/ads/ad-manager"
 import type { Service, Show, Category } from "@/lib/types"
 import { calculateTotalCost } from "@/lib/utils"
 import { defaultCategories } from "@/lib/data"
 import Link from "next/link"
+import { trackRecommendationViewed, trackPageView } from "@/lib/analytics"
 
 export default function RecommendationsScreen() {
   const [services, setServices] = useState<Service[]>([])
@@ -18,6 +20,9 @@ export default function RecommendationsScreen() {
   const [activeCategory, setActiveCategory] = useState<string>("all")
 
   useEffect(() => {
+    // Track page view
+    trackPageView("recommendations_screen")
+
     // Load data from localStorage on component mount
     const savedServices = localStorage.getItem("subscriptions")
     const savedShows = localStorage.getItem("watchingShows")
@@ -86,6 +91,16 @@ export default function RecommendationsScreen() {
       return service.monthlyCost > 15
     })
     .slice(0, 5) // Limit to top 5 recommendations
+
+  // Track recommendation views
+  useEffect(() => {
+    if (recommendations.length > 0) {
+      recommendations.forEach((service) => {
+        const recType = getRecommendationType(service)
+        trackRecommendationViewed(recType, service.name)
+      })
+    }
+  }, [recommendations])
 
   const potentialSavings = recommendations.reduce((total, service) => total + service.monthlyCost, 0)
   const totalCost = calculateTotalCost(services)
@@ -326,6 +341,18 @@ export default function RecommendationsScreen() {
           </div>
         </>
       )}
+
+      {/* Moved all ads to bottom */}
+      <div className="space-y-4 pt-8 border-t border-border">
+        <div className="text-center">
+          <h3 className="text-lg font-semibold mb-2">Money-Saving Tools</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Recommended tools to help you save even more on subscriptions
+          </p>
+        </div>
+
+        <AdManager placement="recommendations" />
+      </div>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import type { Service, Show } from "./types"
+import { formatCurrency } from "./regional-data"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -43,4 +44,9 @@ export function getServiceLogoUrl(serviceName: string): string {
 
   // Default placeholder for other services
   return "/placeholder.svg?height=40&width=40&query=Streaming service logo"
+}
+
+// Add a new utility function for formatting prices with location
+export function formatPrice(amount: number, currency: string, symbol: string): string {
+  return formatCurrency(amount, currency, symbol)
 }

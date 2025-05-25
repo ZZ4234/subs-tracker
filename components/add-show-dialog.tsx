@@ -2,7 +2,9 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
+// Generate a random ID since we don't have uuid package
+const generateId = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -20,7 +22,7 @@ import type { Service, Show } from "@/lib/types"
 interface AddShowDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onAdd: (show: Omit<Show, "id">) => void
+  onAdd: (show: Show) => void
   services: Service[]
 }
 
@@ -28,15 +30,6 @@ export default function AddShowDialog({ open, onOpenChange, onAdd, services }: A
   const [title, setTitle] = useState("")
   const [serviceId, setServiceId] = useState("")
   const [error, setError] = useState<string | null>(null)
-
-  // Reset form when dialog opens
-  useEffect(() => {
-    if (open) {
-      setTitle("")
-      setServiceId("")
-      setError(null)
-    }
-  }, [open])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -53,7 +46,8 @@ export default function AddShowDialog({ open, onOpenChange, onAdd, services }: A
     }
 
     // Create new show
-    const newShow: Omit<Show, "id"> = {
+    const newShow: Show = {
+      id: generateId(),
       title: title.trim(),
       serviceId,
     }
@@ -65,9 +59,6 @@ export default function AddShowDialog({ open, onOpenChange, onAdd, services }: A
     setServiceId("")
     setError(null)
   }
-
-  // Filter services to only show streaming services
-  const streamingServices = services.filter((service) => service.categoryId === "streaming")
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -94,7 +85,7 @@ export default function AddShowDialog({ open, onOpenChange, onAdd, services }: A
                   <SelectValue placeholder="Select a service" />
                 </SelectTrigger>
                 <SelectContent>
-                  {streamingServices.map((service) => (
+                  {services.map((service) => (
                     <SelectItem key={service.id} value={service.id}>
                       {service.name}
                     </SelectItem>
