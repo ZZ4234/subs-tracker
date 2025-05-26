@@ -87,7 +87,7 @@ export const popularServices: PopularService[] = [
   {
     name: "Netflix",
     categoryId: "streaming",
-    monthlyCost: 15.49, // Base USD price
+    monthlyCost: 15.49, // This will be overridden by real-time pricing
     description: "Standard Plan (HD)",
     logoUrl: "/netflix-inspired-logo.png",
     availability: [
@@ -115,6 +115,7 @@ export const popularServices: PopularService[] = [
       "RO",
       "BG",
     ],
+    useRealTimePricing: true, // New flag to indicate this service supports real-time pricing
   },
   {
     name: "Disney+",

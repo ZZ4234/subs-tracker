@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Plus, Search, ChevronDown } from "lucide-react"
+import { Plus, Search, ChevronDown, Wifi, Clock, Users, Database } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import type { Service, Category, PopularService } from "@/lib/types"
 import { popularServices } from "@/lib/data"
 import { getCategoryIcon } from "@/lib/data"
@@ -24,6 +25,7 @@ import { getCategoryIcon } from "@/lib/data"
 // Add these imports at the top
 import { useLocation } from "@/hooks/use-location"
 import { getRegionalPrice, getAvailableServices, formatCurrency, getLocalizedServiceName } from "@/lib/regional-data"
+import { updateAllServicesPricing, supportsRealTimePricing } from "@/lib/pricing-api"
 
 // Generate a random ID
 const generateId = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
@@ -50,9 +52,45 @@ export default function AddSubscriptionDialog({
   const [error, setError] = useState<string | null>(null)
   const [showPopularServices, setShowPopularServices] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [isLoadingPricing, setIsLoadingPricing] = useState(false)
+  const [realTimePrices, setRealTimePrices] = useState<Record<string, any>>({})
+  const [pricingProgress, setPricingProgress] = useState<string>("")
 
   // Inside the component, add location hook
   const { location } = useLocation()
+
+  // Load real-time pricing when location changes
+  useEffect(() => {
+    if (location.countryCode && open) {
+      loadRealTimePricing()
+    }
+  }, [location.countryCode, open])
+
+  const loadRealTimePricing = async () => {
+    setIsLoadingPricing(true)
+    setPricingProgress("Detecting your location...")
+
+    try {
+      setPricingProgress(`Loading current pricing for ${location.country}...`)
+
+      // Get pricing for all supported services
+      const pricingResults = await updateAllServicesPricing(location.countryCode)
+
+      setRealTimePrices(pricingResults)
+      setPricingProgress(`Updated ${Object.keys(pricingResults).length} services`)
+
+      // Clear progress message after a delay
+      setTimeout(() => setPricingProgress(""), 2000)
+
+      console.log("Loaded real-time pricing for", location.countryCode, pricingResults)
+    } catch (error) {
+      console.error("Failed to load real-time pricing:", error)
+      setPricingProgress("Using cached pricing")
+      setTimeout(() => setPricingProgress(""), 2000)
+    } finally {
+      setIsLoadingPricing(false)
+    }
+  }
 
   // Reset form when dialog opens
   useEffect(() => {
@@ -109,14 +147,22 @@ export default function AddSubscriptionDialog({
   const selectPopularService = (service: PopularService) => {
     console.log("Selecting service:", service.name) // Debug log
 
+    // Check if we have real-time pricing for this service
+    const realTimePricing = realTimePrices[service.name]
+    const useRealTime = realTimePricing && supportsRealTimePricing(service.name)
+
     // Create new subscription directly from popular service
     const newSubscription: Service = {
       id: generateId(),
       name: service.name,
-      monthlyCost: service.monthlyCost,
+      monthlyCost: useRealTime ? realTimePricing.price : service.monthlyCost,
       categoryId: service.categoryId,
       description: service.description || undefined,
       logoUrl: service.logoUrl,
+      realTimePricing: useRealTime,
+      pricingSource: useRealTime ? realTimePricing.source : "manual",
+      pricingConfidence: useRealTime ? realTimePricing.confidence : "medium",
+      lastPriceUpdate: useRealTime ? realTimePricing.lastUpdated : new Date().toISOString(),
     }
 
     // Add the subscription directly
@@ -140,11 +186,46 @@ export default function AddSubscriptionDialog({
   }
 
   // Update the filteredServices logic
-  const filteredServices = getAvailableServices(popularServices, location.countryCode).filter((service) => {
-    const matchesSearch = service.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = !categoryId || service.categoryId === categoryId
-    return matchesSearch && matchesCategory
-  })
+  const filteredServices = getAvailableServices(popularServices, location.countryCode)
+    .filter((service) => {
+      const matchesSearch = service.name.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesCategory = !categoryId || service.categoryId === categoryId
+      return matchesSearch && matchesCategory
+    })
+    .map((service) => {
+      // Use real-time pricing if available
+      const realTimePrice = realTimePrices[service.name]
+      if (realTimePrice && service.useRealTimePricing) {
+        return {
+          ...service,
+          monthlyCost: realTimePrice.price,
+          realTimePricing: realTimePrice,
+        }
+      }
+      return service
+    })
+
+  const getPricingSourceIcon = (source: string) => {
+    switch (source) {
+      case "api":
+        return <Wifi className="h-3 w-3" />
+      case "scraping":
+        return <Search className="h-3 w-3" />
+      case "community":
+        return <Users className="h-3 w-3" />
+      default:
+        return <Database className="h-3 w-3" />
+    }
+  }
+
+  const getPricingSourceColor = (source: string, confidence: string) => {
+    if (source === "api" && confidence === "high")
+      return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+    if (source === "scraping" && confidence === "high")
+      return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+    if (source === "community") return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+    return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -171,6 +252,14 @@ export default function AddSubscriptionDialog({
             {showPopularServices && (
               <Card className="mt-2">
                 <CardContent className="p-3">
+                  {(isLoadingPricing || pricingProgress) && (
+                    <div className="text-center py-2 mb-3">
+                      <div className="text-sm text-muted-foreground">
+                        {isLoadingPricing && <Clock className="h-4 w-4 inline mr-1 animate-spin" />}🌍{" "}
+                        {pricingProgress || `Loading current pricing for ${location.country}...`}
+                      </div>
+                    </div>
+                  )}
                   <Input
                     placeholder="Search services..."
                     value={searchQuery}
@@ -179,6 +268,9 @@ export default function AddSubscriptionDialog({
                   />
                   <div className="max-h-48 overflow-y-auto space-y-2">
                     {filteredServices.slice(0, 10).map((service) => {
+                      const realTimePricing = (service as any).realTimePricing
+                      const hasRealTimePricing = realTimePricing && supportsRealTimePricing(service.name)
+
                       const regionalPrice = getRegionalPrice(
                         service.name,
                         service.monthlyCost,
@@ -200,13 +292,39 @@ export default function AddSubscriptionDialog({
                           }
                           className="flex justify-between items-center p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
                         >
-                          <div className="flex flex-col">
-                            <span className="font-medium text-sm">{localizedName}</span>
+                          <div className="flex flex-col flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-sm">{localizedName}</span>
+                              {hasRealTimePricing && (
+                                <Badge
+                                  variant="secondary"
+                                  className={`text-xs ${getPricingSourceColor(realTimePricing.source, realTimePricing.confidence)}`}
+                                >
+                                  {getPricingSourceIcon(realTimePricing.source)}
+                                  <span className="ml-1">
+                                    {realTimePricing.source === "api"
+                                      ? "Live"
+                                      : realTimePricing.source === "scraping"
+                                        ? "Fresh"
+                                        : realTimePricing.source === "community"
+                                          ? "Community"
+                                          : "Cached"}
+                                  </span>
+                                </Badge>
+                              )}
+                            </div>
                             {service.description && (
                               <span className="text-xs text-muted-foreground">{service.description}</span>
                             )}
                           </div>
-                          <span className="text-sm font-medium text-green-600">{formattedPrice}/mo</span>
+                          <div className="flex flex-col items-end">
+                            <span className="text-sm font-medium text-green-600">{formattedPrice}/mo</span>
+                            {hasRealTimePricing && (
+                              <span className="text-xs text-muted-foreground">
+                                {new Date(realTimePricing.lastUpdated).toLocaleDateString()}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       )
                     })}
@@ -263,7 +381,7 @@ export default function AddSubscriptionDialog({
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="cost">Monthly Cost ($)</Label>
+                <Label htmlFor="cost">Monthly Cost ({location.currencySymbol})</Label>
                 <Input
                   id="cost"
                   type="number"

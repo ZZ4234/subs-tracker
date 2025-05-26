@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Plus, Filter, DollarSign, BarChart3, TrendingUp, Tv, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,7 @@ import {
 import AddSubscriptionDialog from "@/components/add-subscription-dialog"
 import SubscriptionCard from "@/components/subscription-card"
 import AddCategoryDialog from "@/components/add-category-dialog"
+import PricingDashboard from "@/components/pricing-dashboard"
 import AdManager from "@/components/ads/ad-manager"
 import type { Service, Show, Category } from "@/lib/types"
 import { calculateTotalCost } from "@/lib/utils"
@@ -32,6 +33,7 @@ export default function HomeScreen() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [showIntroduction, setShowIntroduction] = useState(true)
   const [showHowItWorks, setShowHowItWorks] = useState(true)
+  const [activeTab, setActiveTab] = useState("overview")
 
   useEffect(() => {
     // Load data from localStorage on component mount
@@ -93,6 +95,10 @@ export default function HomeScreen() {
     if (serviceToRemove) {
       trackSubscriptionRemoved(serviceToRemove.name, serviceToRemove.monthlyCost)
     }
+  }
+
+  const updateServices = (updatedServices: Service[]) => {
+    setServices(updatedServices)
   }
 
   const addCategory = (category: Category) => {
@@ -226,159 +232,189 @@ export default function HomeScreen() {
         </Card>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Your Subscriptions</h2>
-          <div className="flex space-x-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Filter className="h-4 w-4 mr-1" />
-                  Filter
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                {categories.map((category) => (
-                  <DropdownMenuCheckboxItem
-                    key={category.id}
-                    checked={selectedCategories.includes(category.id)}
-                    onCheckedChange={() => toggleCategorySelection(category.id)}
-                  >
-                    {category.name}
-                  </DropdownMenuCheckboxItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button
-              onClick={() => setIsAddSubscriptionOpen(true)}
-              size="sm"
-              className="bg-violet-600 hover:bg-violet-700"
-            >
-              <Plus className="mr-1 h-4 w-4" />
-              Add
-            </Button>
-          </div>
-        </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid grid-cols-3 mb-4">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
+          <TabsTrigger value="pricing">Pricing</TabsTrigger>
+        </TabsList>
 
-        <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
-          <TabsList className="w-full overflow-x-auto flex-nowrap justify-start h-auto p-1 bg-muted/50">
-            <TabsTrigger value="all" className="px-3 py-1.5 h-auto">
-              All
-            </TabsTrigger>
-            {categories
-              .filter((category) => usedCategoryIds.includes(category.id))
-              .map((category) => {
-                const CategoryIcon = getCategoryIcon(category.icon)
-                return (
-                  <TabsTrigger key={category.id} value={category.id} className="px-3 py-1.5 h-auto whitespace-nowrap">
-                    <CategoryIcon className="h-4 w-4 mr-1" />
-                    {category.name}
-                    {costByCategory[category.id] > 0 && (
-                      <span className="ml-1 text-xs opacity-70">${costByCategory[category.id].toFixed(0)}</span>
-                    )}
-                  </TabsTrigger>
-                )
-              })}
-          </TabsList>
-        </Tabs>
-
-        {filteredServices.length === 0 ? (
-          <div className="space-y-6">
-            {/* How It Works Section */}
-            {showHowItWorks && (
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-2xl p-6 border border-blue-200 dark:border-blue-800 relative">
-                <button
-                  onClick={() => setShowHowItWorks(false)}
-                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 dark:bg-black/80 hover:bg-white dark:hover:bg-black flex items-center justify-center transition-colors"
-                  aria-label="Close how it works"
-                >
-                  <X className="h-4 w-4 text-muted-foreground" />
-                </button>
-
-                <h3 className="text-xl font-semibold mb-4 text-center">How It Works</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                      1
-                    </div>
-                    <div>
-                      <h4 className="font-medium">Add Your Subscriptions</h4>
-                      <p className="text-sm text-muted-foreground">Track Netflix, Spotify, gym memberships, and more</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                      2
-                    </div>
-                    <div>
-                      <h4 className="font-medium">Monitor Your Usage</h4>
-                      <p className="text-sm text-muted-foreground">
-                        See which services you actually use and which you don't
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                      3
-                    </div>
-                    <div>
-                      <h4 className="font-medium">Get Smart Recommendations</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Discover ways to save money and optimize your subscriptions
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Benefits Section */}
-            <div className="grid grid-cols-2 gap-4">
-              <Card className="p-4 bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800">
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-green-500 text-white rounded-xl flex items-center justify-center mx-auto mb-2">
-                    <DollarSign className="h-6 w-6" />
-                  </div>
-                  <h4 className="font-semibold text-sm">Save Money</h4>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Cancel unused subscriptions and find better deals
-                  </p>
-                </div>
-              </Card>
-              <Card className="p-4 bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800">
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-purple-500 text-white rounded-xl flex items-center justify-center mx-auto mb-2">
-                    <BarChart3 className="h-6 w-6" />
-                  </div>
-                  <h4 className="font-semibold text-sm">Stay Organized</h4>
-                  <p className="text-xs text-muted-foreground mt-1">Never lose track of what you're paying for</p>
-                </div>
-              </Card>
-            </div>
-
-            {/* Call to Action */}
-            <div className="text-center py-6 bg-muted/30 rounded-xl">
-              <h3 className="text-lg font-semibold mb-2">Ready to Take Control?</h3>
-              <p className="text-muted-foreground mb-4 text-sm">Start by adding your first subscription</p>
-              <div className="flex flex-col space-y-2 items-center">
+        <TabsContent value="overview" className="space-y-4">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Your Subscriptions</h2>
+              <div className="flex space-x-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Filter className="h-4 w-4 mr-1" />
+                      Filter
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    {categories.map((category) => (
+                      <DropdownMenuCheckboxItem
+                        key={category.id}
+                        checked={selectedCategories.includes(category.id)}
+                        onCheckedChange={() => toggleCategorySelection(category.id)}
+                      >
+                        {category.name}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button
                   onClick={() => setIsAddSubscriptionOpen(true)}
-                  className="bg-violet-600 hover:bg-violet-700 px-8"
-                  size="lg"
+                  size="sm"
+                  className="bg-violet-600 hover:bg-violet-700"
                 >
-                  <Plus className="mr-2 h-5 w-5" />
-                  Add Your First Subscription
-                </Button>
-                <Button onClick={() => setIsAddCategoryOpen(true)} variant="outline" size="sm">
-                  <Plus className="mr-2 h-3 w-3" />
-                  Create Custom Category
+                  <Plus className="mr-1 h-4 w-4" />
+                  Add
                 </Button>
               </div>
             </div>
+
+            <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
+              <TabsList className="w-full overflow-x-auto flex-nowrap justify-start h-auto p-1 bg-muted/50">
+                <TabsTrigger value="all" className="px-3 py-1.5 h-auto">
+                  All
+                </TabsTrigger>
+                {categories
+                  .filter((category) => usedCategoryIds.includes(category.id))
+                  .map((category) => {
+                    const CategoryIcon = getCategoryIcon(category.icon)
+                    return (
+                      <TabsTrigger
+                        key={category.id}
+                        value={category.id}
+                        className="px-3 py-1.5 h-auto whitespace-nowrap"
+                      >
+                        <CategoryIcon className="h-4 w-4 mr-1" />
+                        {category.name}
+                        {costByCategory[category.id] > 0 && (
+                          <span className="ml-1 text-xs opacity-70">${costByCategory[category.id].toFixed(0)}</span>
+                        )}
+                      </TabsTrigger>
+                    )
+                  })}
+              </TabsList>
+            </Tabs>
+
+            {filteredServices.length === 0 ? (
+              <div className="space-y-6">
+                {/* How It Works Section */}
+                {showHowItWorks && (
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-2xl p-6 border border-blue-200 dark:border-blue-800 relative">
+                    <button
+                      onClick={() => setShowHowItWorks(false)}
+                      className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 dark:bg-black/80 hover:bg-white dark:hover:bg-black flex items-center justify-center transition-colors"
+                      aria-label="Close how it works"
+                    >
+                      <X className="h-4 w-4 text-muted-foreground" />
+                    </button>
+
+                    <h3 className="text-xl font-semibold mb-4 text-center">How It Works</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                          1
+                        </div>
+                        <div>
+                          <h4 className="font-medium">Add Your Subscriptions</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Track Netflix, Spotify, gym memberships, and more
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                          2
+                        </div>
+                        <div>
+                          <h4 className="font-medium">Monitor Your Usage</h4>
+                          <p className="text-sm text-muted-foreground">
+                            See which services you actually use and which you don't
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                          3
+                        </div>
+                        <div>
+                          <h4 className="font-medium">Get Smart Recommendations</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Discover ways to save money and optimize your subscriptions
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Benefits Section */}
+                <div className="grid grid-cols-2 gap-4">
+                  <Card className="p-4 bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-green-500 text-white rounded-xl flex items-center justify-center mx-auto mb-2">
+                        <DollarSign className="h-6 w-6" />
+                      </div>
+                      <h4 className="font-semibold text-sm">Save Money</h4>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Cancel unused subscriptions and find better deals
+                      </p>
+                    </div>
+                  </Card>
+                  <Card className="p-4 bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-purple-500 text-white rounded-xl flex items-center justify-center mx-auto mb-2">
+                        <BarChart3 className="h-6 w-6" />
+                      </div>
+                      <h4 className="font-semibold text-sm">Stay Organized</h4>
+                      <p className="text-xs text-muted-foreground mt-1">Never lose track of what you're paying for</p>
+                    </div>
+                  </Card>
+                </div>
+
+                {/* Call to Action */}
+                <div className="text-center py-6 bg-muted/30 rounded-xl">
+                  <h3 className="text-lg font-semibold mb-2">Ready to Take Control?</h3>
+                  <p className="text-muted-foreground mb-4 text-sm">Start by adding your first subscription</p>
+                  <div className="flex flex-col space-y-2 items-center">
+                    <Button
+                      onClick={() => setIsAddSubscriptionOpen(true)}
+                      className="bg-violet-600 hover:bg-violet-700 px-8"
+                      size="lg"
+                    >
+                      <Plus className="mr-2 h-5 w-5" />
+                      Add Your First Subscription
+                    </Button>
+                    <Button onClick={() => setIsAddCategoryOpen(true)} variant="outline" size="sm">
+                      <Plus className="mr-2 h-3 w-3" />
+                      Create Custom Category
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="grid gap-3">
+                {filteredServices.map((service) => (
+                  <SubscriptionCard
+                    key={service.id}
+                    subscription={service}
+                    category={categories.find((c) => c.id === service.categoryId) || categories[categories.length - 1]}
+                    showCount={shows.filter((show) => show.serviceId === service.id).length}
+                    onRemove={removeSubscription}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        ) : (
+        </TabsContent>
+
+        <TabsContent value="subscriptions" className="space-y-4">
           <div className="grid gap-3">
-            {filteredServices.map((service) => (
+            {services.map((service) => (
               <SubscriptionCard
                 key={service.id}
                 subscription={service}
@@ -388,8 +424,21 @@ export default function HomeScreen() {
               />
             ))}
           </div>
-        )}
-      </div>
+          {services.length === 0 && (
+            <div className="text-center py-8 bg-muted/30 rounded-lg">
+              <p className="text-muted-foreground mb-4">No subscriptions added yet</p>
+              <Button onClick={() => setIsAddSubscriptionOpen(true)} className="bg-violet-600 hover:bg-violet-700">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Your First Subscription
+              </Button>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="pricing" className="space-y-4">
+          <PricingDashboard services={services} onServicesUpdate={updateServices} />
+        </TabsContent>
+      </Tabs>
 
       {/* Money-Saving Tips Section */}
       <div className="space-y-4 pt-8 border-t border-border">

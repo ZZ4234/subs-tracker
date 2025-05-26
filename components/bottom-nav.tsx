@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Home, Tv, TrendingUp } from "lucide-react"
+import { Home, Tv, TrendingUp, Info, BookOpen } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface BottomNavProps {
@@ -25,24 +25,34 @@ export default function BottomNav({ currentPath }: BottomNavProps) {
       icon: TrendingUp,
       label: "Optimize",
     },
+    {
+      href: "/about",
+      icon: Info,
+      label: "About",
+    },
+    {
+      href: "/blog",
+      icon: BookOpen,
+      label: "Blog",
+    },
   ]
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-t border-border">
       <nav className="container max-w-md mx-auto flex items-center justify-around">
         {navItems.map((item) => {
-          const isActive = currentPath === item.href
+          const isActive = currentPath === item.href || (item.href !== "/" && currentPath.startsWith(item.href))
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center py-2 px-4 text-xs transition-colors",
+                "flex flex-col items-center py-2 px-2 text-xs transition-colors",
                 isActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
               )}
             >
-              <item.icon className={cn("h-6 w-6 mb-1", isActive ? "text-primary" : "")} />
-              <span>{item.label}</span>
+              <item.icon className={cn("h-5 w-5 mb-1", isActive ? "text-primary" : "")} />
+              <span className="text-xs">{item.label}</span>
             </Link>
           )
         })}
