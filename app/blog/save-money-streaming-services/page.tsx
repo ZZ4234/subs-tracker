@@ -22,183 +22,185 @@ export const metadata: Metadata = {
 export default function BlogPostPage() {
   return (
     <AppLayout>
-      <article className="space-y-6 max-w-3xl mx-auto">
-        <div className="text-center py-6">
-          <div className="flex justify-center gap-2 mb-4">
-            <Badge variant="secondary">Streaming</Badge>
-            <Badge variant="secondary">Money Saving</Badge>
-            <Badge variant="secondary">Netflix</Badge>
-          </div>
-          <h1 className="text-3xl font-bold mb-2">How to Save $100+ Per Month on Streaming Services</h1>
-          <p className="text-muted-foreground">Published on January 15, 2024 • 5 min read</p>
-        </div>
-
-        <div className="prose prose-gray dark:prose-invert max-w-none">
-          <p className="text-lg">
-            The average household now spends over $200 per month on streaming services. With Netflix, Disney+, HBO Max,
-            Hulu, Amazon Prime, Apple TV+, and countless others, it's easy to see how costs add up quickly. But with the
-            right strategies, you can cut your streaming budget by $100 or more without missing your favorite content.
-          </p>
-
-          <h2 className="text-2xl font-bold mt-8 mb-4">1. The Rotation Strategy</h2>
-          <p>
-            Instead of maintaining year-round subscriptions to every service, rotate between them based on what you're
-            actively watching:
-          </p>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>
-              <strong>Subscribe for 1-2 months</strong> when new seasons of your favorite shows release
-            </li>
-            <li>
-              <strong>Binge your content</strong> then cancel until the next season
-            </li>
-            <li>
-              <strong>Use free trials</strong> strategically for new services
-            </li>
-            <li>
-              <strong>Set calendar reminders</strong> to cancel before renewal dates
-            </li>
-          </ul>
-          <p>
-            <em>Potential savings: $50-80/month</em>
-          </p>
-
-          <h2 className="text-2xl font-bold mt-8 mb-4">2. Family Plan Optimization</h2>
-          <p>Most streaming services offer family plans that cost only slightly more than individual subscriptions:</p>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>
-              <strong>Netflix Standard:</strong> $15.49 vs $6.99 Basic (supports 2 screens)
-            </li>
-            <li>
-              <strong>Disney+ Bundle:</strong> $19.99 for Disney+, Hulu, and ESPN+
-            </li>
-            <li>
-              <strong>Spotify Family:</strong> $16.99 for 6 accounts vs $10.99 individual
-            </li>
-            <li>
-              <strong>YouTube Premium Family:</strong> $22.99 for 6 accounts vs $11.99 individual
-            </li>
-          </ul>
-          <p>Share costs with family members or trusted friends to reduce your portion significantly.</p>
-          <p>
-            <em>Potential savings: $30-50/month</em>
-          </p>
-
-          <h2 className="text-2xl font-bold mt-8 mb-4">3. Bundle Deals and Promotions</h2>
-          <p>Take advantage of legitimate bundle offers:</p>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>
-              <strong>Verizon Unlimited:</strong> Often includes Disney+ and Apple Music
-            </li>
-            <li>
-              <strong>T-Mobile Magenta:</strong> Includes Netflix and Apple TV+
-            </li>
-            <li>
-              <strong>Amazon Prime:</strong> Includes Prime Video, Music, and shipping
-            </li>
-            <li>
-              <strong>Student discounts:</strong> 50% off most major services
-            </li>
-          </ul>
-
-          <h2 className="text-2xl font-bold mt-8 mb-4">4. Free and Ad-Supported Alternatives</h2>
-          <p>Consider free or cheaper ad-supported versions:</p>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>
-              <strong>Tubi, Pluto TV, Crackle:</strong> Completely free with ads
-            </li>
-            <li>
-              <strong>Hulu (with ads):</strong> $7.99 vs $14.99 ad-free
-            </li>
-            <li>
-              <strong>Peacock Premium:</strong> $5.99 with ads vs $11.99 ad-free
-            </li>
-            <li>
-              <strong>YouTube:</strong> Free with ads vs $11.99 Premium
-            </li>
-          </ul>
-
-          <h2 className="text-2xl font-bold mt-8 mb-4">5. Track Your Usage</h2>
-          <p>Use tools like our Subscription Tracker to monitor which services you actually use:</p>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>Add shows you're watching to each service</li>
-            <li>Calculate cost per show or hour watched</li>
-            <li>Identify services you haven't used in 30+ days</li>
-            <li>Get recommendations for services to cancel or downgrade</li>
-          </ul>
-
-          <h2 className="text-2xl font-bold mt-8 mb-4">Real Example: Sarah's $127 Monthly Savings</h2>
-          <div className="bg-muted p-6 rounded-lg">
-            <h3 className="font-bold mb-2">Before (Monthly Cost: $187)</h3>
-            <ul className="list-disc pl-6 space-y-1 text-sm">
-              <li>Netflix Premium: $19.99</li>
-              <li>Disney+ Bundle: $19.99</li>
-              <li>HBO Max: $15.99</li>
-              <li>Apple TV+: $6.99</li>
-              <li>Amazon Prime: $14.99</li>
-              <li>Spotify Individual: $10.99</li>
-              <li>YouTube Premium: $11.99</li>
-              <li>Paramount+: $9.99</li>
-              <li>Peacock Premium: $11.99</li>
-              <li>Discovery+: $6.99</li>
-              <li>Showtime: $10.99</li>
-              <li>Starz: $9.99</li>
-              <li>Crunchyroll: $7.99</li>
-              <li>Adobe Creative Cloud: $54.99</li>
-            </ul>
-
-            <h3 className="font-bold mb-2 mt-4">After Optimization (Monthly Cost: $60)</h3>
-            <ul className="list-disc pl-6 space-y-1 text-sm">
-              <li>Netflix Standard (shared): $7.75</li>
-              <li>Disney+ Bundle (rotated): $6.67</li>
-              <li>HBO Max (rotated): $5.33</li>
-              <li>Amazon Prime: $14.99</li>
-              <li>Spotify Family (shared): $2.83</li>
-              <li>YouTube Premium Family (shared): $3.83</li>
-              <li>Adobe Creative Cloud (annual): $18.33</li>
-            </ul>
-
-            <p className="font-bold text-green-600 mt-4">Total Monthly Savings: $127</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+        <div className="container max-w-md mx-auto p-4 space-y-6">
+          <div className="text-center py-6">
+            <div className="flex justify-center gap-2 mb-4">
+              <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+                Streaming
+              </Badge>
+              <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+                Money Saving
+              </Badge>
+              <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+                Netflix
+              </Badge>
+            </div>
+            <h1 className="text-2xl font-bold mb-2 text-white">How to Save $100+ Per Month on Streaming Services</h1>
+            <p className="text-slate-400">Published on January 15, 2024 • 5 min read</p>
           </div>
 
-          <h2 className="text-2xl font-bold mt-8 mb-4">Action Plan</h2>
-          <ol className="list-decimal pl-6 space-y-2">
-            <li>List all your current subscriptions and their costs</li>
-            <li>Track what you actually watch for 30 days</li>
-            <li>Cancel services you haven't used in the past month</li>
-            <li>Switch to family plans and share costs where possible</li>
-            <li>Set up a rotation schedule for seasonal content</li>
-            <li>Use our Subscription Tracker to monitor ongoing usage</li>
-          </ol>
+          <div className="space-y-6">
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardContent className="pt-6">
+                <p className="text-slate-300 leading-relaxed">
+                  The average household now spends over $200 per month on streaming services. With Netflix, Disney+, HBO
+                  Max, Hulu, Amazon Prime, Apple TV+, and countless others, it's easy to see how costs add up quickly.
+                  But with the right strategies, you can cut your streaming budget by $100 or more without missing your
+                  favorite content.
+                </p>
+              </CardContent>
+            </Card>
 
-          <p className="text-lg font-medium mt-8">
-            Start tracking your subscriptions today and see how much you can save!
-          </p>
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-xl text-white">1. The Rotation Strategy</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-slate-300">
+                  Instead of maintaining year-round subscriptions to every service, rotate between them based on what
+                  you're actively watching:
+                </p>
+                <ul className="list-disc pl-6 space-y-2 text-slate-300">
+                  <li>
+                    <strong className="text-white">Subscribe for 1-2 months</strong> when new seasons of your favorite
+                    shows release
+                  </li>
+                  <li>
+                    <strong className="text-white">Binge your content</strong> then cancel until the next season
+                  </li>
+                  <li>
+                    <strong className="text-white">Use free trials</strong> strategically for new services
+                  </li>
+                  <li>
+                    <strong className="text-white">Set calendar reminders</strong> to cancel before renewal dates
+                  </li>
+                </ul>
+                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
+                  <p className="text-green-300 font-medium">Potential savings: $50-80/month</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-xl text-white">2. Family Plan Optimization</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-slate-300">
+                  Most streaming services offer family plans that cost only slightly more than individual subscriptions:
+                </p>
+                <ul className="list-disc pl-6 space-y-2 text-slate-300">
+                  <li>
+                    <strong className="text-white">Netflix Standard:</strong> $15.49 vs $6.99 Basic (supports 2 screens)
+                  </li>
+                  <li>
+                    <strong className="text-white">Disney+ Bundle:</strong> $19.99 for Disney+, Hulu, and ESPN+
+                  </li>
+                  <li>
+                    <strong className="text-white">Spotify Family:</strong> $16.99 for 6 accounts vs $10.99 individual
+                  </li>
+                  <li>
+                    <strong className="text-white">YouTube Premium Family:</strong> $22.99 for 6 accounts vs $11.99
+                    individual
+                  </li>
+                </ul>
+                <p className="text-slate-300">
+                  Share costs with family members or trusted friends to reduce your portion significantly.
+                </p>
+                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
+                  <p className="text-green-300 font-medium">Potential savings: $30-50/month</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-xl text-white">3. Bundle Deals and Promotions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-slate-300">Take advantage of legitimate bundle offers:</p>
+                <ul className="list-disc pl-6 space-y-2 text-slate-300">
+                  <li>
+                    <strong className="text-white">Verizon Unlimited:</strong> Often includes Disney+ and Apple Music
+                  </li>
+                  <li>
+                    <strong className="text-white">T-Mobile Magenta:</strong> Includes Netflix and Apple TV+
+                  </li>
+                  <li>
+                    <strong className="text-white">Amazon Prime:</strong> Includes Prime Video, Music, and shipping
+                  </li>
+                  <li>
+                    <strong className="text-white">Student discounts:</strong> 50% off most major services
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-xl text-white">4. Free and Ad-Supported Alternatives</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-slate-300">Consider free or cheaper ad-supported versions:</p>
+                <ul className="list-disc pl-6 space-y-2 text-slate-300">
+                  <li>
+                    <strong className="text-white">Tubi, Pluto TV, Crackle:</strong> Completely free with ads
+                  </li>
+                  <li>
+                    <strong className="text-white">Hulu (with ads):</strong> $7.99 vs $14.99 ad-free
+                  </li>
+                  <li>
+                    <strong className="text-white">Peacock Premium:</strong> $5.99 with ads vs $11.99 ad-free
+                  </li>
+                  <li>
+                    <strong className="text-white">YouTube:</strong> Free with ads vs $11.99 Premium
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-xl text-white">Action Plan</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <ol className="list-decimal pl-6 space-y-2 text-slate-300">
+                  <li>List all your current subscriptions and their costs</li>
+                  <li>Track what you actually watch for 30 days</li>
+                  <li>Cancel services you haven't used in the past month</li>
+                  <li>Switch to family plans and share costs where possible</li>
+                  <li>Set up a rotation schedule for seasonal content</li>
+                  <li>Use our Subscription Tracker to monitor ongoing usage</li>
+                </ol>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-purple-600/20 border-purple-500/30">
+              <CardHeader>
+                <CardTitle className="text-white">Ready to Start Saving?</CardTitle>
+                <CardDescription className="text-purple-200">
+                  Use our free Subscription Tracker to monitor your services and get personalized recommendations.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link
+                  href="/"
+                  className="inline-block bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 transition-colors"
+                >
+                  Start Tracking Your Subscriptions
+                </Link>
+              </CardContent>
+            </Card>
+
+            <div className="border-t border-slate-700 pt-6">
+              <Link href="/blog" className="text-purple-400 hover:text-purple-300 transition-colors">
+                ← Back to Blog
+              </Link>
+            </div>
+          </div>
         </div>
-
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Ready to Start Saving?</CardTitle>
-            <CardDescription>
-              Use our free Subscription Tracker to monitor your services and get personalized recommendations.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link
-              href="/"
-              className="inline-block bg-primary text-primary-foreground px-6 py-2 rounded-md hover:bg-primary/90 transition-colors"
-            >
-              Start Tracking Your Subscriptions
-            </Link>
-          </CardContent>
-        </Card>
-
-        <div className="border-t pt-6">
-          <Link href="/blog" className="text-primary hover:underline">
-            ← Back to Blog
-          </Link>
-        </div>
-      </article>
+      </div>
     </AppLayout>
   )
 }

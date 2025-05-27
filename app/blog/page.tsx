@@ -59,78 +59,90 @@ const blogPosts = [
 export default function BlogPage() {
   return (
     <AppLayout>
-      <div className="space-y-6">
-        <div className="text-center py-6">
-          <h1 className="text-3xl font-bold mb-2">Subscription Management Blog</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Expert tips, guides, and strategies to help you save money and optimize your subscriptions.
-          </p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+        <div className="container max-w-md mx-auto p-4 space-y-6">
+          <div className="text-center py-6">
+            <h1 className="text-2xl font-bold mb-2 text-white">Subscription Management Blog</h1>
+            <p className="text-purple-200">
+              Expert tips, guides, and strategies to help you save money and optimize your subscriptions.
+            </p>
+          </div>
 
-        <div className="grid gap-6">
-          {blogPosts.map((post) => (
-            <Card key={post.slug} className="hover:shadow-md transition-shadow">
-              <CardHeader>
-                <div className="flex justify-between items-start mb-2">
-                  <div className="flex flex-wrap gap-2">
+          <div className="grid gap-4">
+            {blogPosts.map((post) => (
+              <Card
+                key={post.slug}
+                className="bg-slate-800/50 border-slate-700 hover:bg-slate-800/70 transition-colors"
+              >
+                <CardHeader>
+                  <div className="flex flex-wrap gap-2 mb-2">
                     {post.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-xs">
+                      <Badge
+                        key={tag}
+                        variant="secondary"
+                        className="text-xs bg-purple-500/20 text-purple-300 border-purple-500/30"
+                      >
                         {tag}
                       </Badge>
                     ))}
                   </div>
-                  <span className="text-sm text-muted-foreground">{post.readTime}</span>
-                </div>
-                <CardTitle className="text-xl">
-                  <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
-                    {post.title}
-                  </Link>
-                </CardTitle>
-                <CardDescription className="text-base">{post.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">
-                    {new Date(post.date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
-                  <Link href={`/blog/${post.slug}`} className="text-sm font-medium text-primary hover:underline">
-                    Read more →
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  <CardTitle className="text-lg text-white">
+                    <Link href={`/blog/${post.slug}`} className="hover:text-purple-300 transition-colors">
+                      {post.title}
+                    </Link>
+                  </CardTitle>
+                  <CardDescription className="text-slate-400">{post.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-slate-400">
+                      {new Date(post.date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-slate-500">{post.readTime}</span>
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        className="text-sm font-medium text-purple-400 hover:text-purple-300"
+                      >
+                        Read →
+                      </Link>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Popular Topics</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center">
-                <h4 className="font-medium">Streaming Services</h4>
-                <p className="text-sm text-muted-foreground">Netflix, Disney+, HBO Max guides</p>
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardHeader>
+              <CardTitle className="text-white">Popular Topics</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="text-center p-3 bg-slate-700/30 rounded-lg">
+                  <h4 className="font-medium text-white">Streaming Services</h4>
+                  <p className="text-sm text-slate-400">Netflix, Disney+, HBO Max guides</p>
+                </div>
+                <div className="text-center p-3 bg-slate-700/30 rounded-lg">
+                  <h4 className="font-medium text-white">Money Saving</h4>
+                  <p className="text-sm text-slate-400">Tips to reduce monthly costs</p>
+                </div>
+                <div className="text-center p-3 bg-slate-700/30 rounded-lg">
+                  <h4 className="font-medium text-white">Budget Management</h4>
+                  <p className="text-sm text-slate-400">Track and optimize spending</p>
+                </div>
+                <div className="text-center p-3 bg-slate-700/30 rounded-lg">
+                  <h4 className="font-medium text-white">Service Reviews</h4>
+                  <p className="text-sm text-slate-400">Honest reviews and comparisons</p>
+                </div>
               </div>
-              <div className="text-center">
-                <h4 className="font-medium">Money Saving</h4>
-                <p className="text-sm text-muted-foreground">Tips to reduce monthly costs</p>
-              </div>
-              <div className="text-center">
-                <h4 className="font-medium">Budget Management</h4>
-                <p className="text-sm text-muted-foreground">Track and optimize spending</p>
-              </div>
-              <div className="text-center">
-                <h4 className="font-medium">Service Reviews</h4>
-                <p className="text-sm text-muted-foreground">Honest reviews and comparisons</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </AppLayout>
   )
