@@ -1,8 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Home, Tv, TrendingUp, Info, BookOpen } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Home, Tv, Zap, Info, BookOpen } from "lucide-react"
 
 interface BottomNavProps {
   currentPath: string
@@ -10,53 +9,34 @@ interface BottomNavProps {
 
 export default function BottomNav({ currentPath }: BottomNavProps) {
   const navItems = [
-    {
-      href: "/",
-      icon: Home,
-      label: "Home",
-    },
-    {
-      href: "/shows",
-      icon: Tv,
-      label: "Shows",
-    },
-    {
-      href: "/recommendations",
-      icon: TrendingUp,
-      label: "Optimize",
-    },
-    {
-      href: "/about",
-      icon: Info,
-      label: "About",
-    },
-    {
-      href: "/blog",
-      icon: BookOpen,
-      label: "Blog",
-    },
+    { href: "/", icon: Home, label: "Home" },
+    { href: "/shows", icon: Tv, label: "Shows" },
+    { href: "/recommendations", icon: Zap, label: "Optimize" },
+    { href: "/about", icon: Info, label: "About" },
+    { href: "/blog", icon: BookOpen, label: "Blog" },
   ]
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-t border-border">
-      <nav className="container max-w-md mx-auto flex items-center justify-around">
-        {navItems.map((item) => {
-          const isActive = currentPath === item.href || (item.href !== "/" && currentPath.startsWith(item.href))
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex flex-col items-center py-2 px-2 text-xs transition-colors",
-                isActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <item.icon className={cn("h-5 w-5 mb-1", isActive ? "text-primary" : "")} />
-              <span className="text-xs">{item.label}</span>
-            </Link>
-          )
-        })}
-      </nav>
-    </div>
+    <nav className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-sm border-t border-slate-700 z-50">
+      <div className="max-w-md mx-auto px-4 py-2">
+        <div className="flex justify-around">
+          {navItems.map(({ href, icon: Icon, label }) => {
+            const isActive = currentPath === href
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
+                  isActive ? "text-purple-400" : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                <Icon className="h-5 w-5" />
+                <span className="text-xs mt-1">{label}</span>
+              </Link>
+            )
+          })}
+        </div>
+      </div>
+    </nav>
   )
 }

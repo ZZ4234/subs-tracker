@@ -10,11 +10,11 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: {
-    default: "Subscription Tracker - Manage Your Monthly Expenses",
-    template: "%s | Subscription Tracker",
+    default: "SmartSubSaver - Track & Optimize Your Subscriptions",
+    template: "%s | SmartSubSaver",
   },
   description:
-    "Track all your subscriptions, streaming services, and recurring expenses in one place. Get recommendations to save money and optimize your monthly budget.",
+    "Track all your subscriptions, streaming services, and recurring expenses in one place. Get smart recommendations to save money and optimize your monthly budget with SmartSubSaver.",
   keywords: [
     "subscription tracker",
     "monthly expenses",
@@ -24,17 +24,21 @@ export const metadata: Metadata = {
     "save money",
     "Netflix tracker",
     "Disney Plus tracker",
+    "Spotify tracker",
     "subscription optimizer",
+    "SmartSubSaver",
+    "recurring payments",
+    "subscription audit",
   ],
-  authors: [{ name: "Subscription Tracker" }],
-  creator: "Subscription Tracker",
-  publisher: "Subscription Tracker",
+  authors: [{ name: "SmartSubSaver" }],
+  creator: "SmartSubSaver",
+  publisher: "SmartSubSaver",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://your-app.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://smartsubsaver.com"),
   alternates: {
     canonical: "/",
   },
@@ -42,26 +46,26 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "/",
-    title: "Subscription Tracker - Manage Your Monthly Expenses",
+    title: "SmartSubSaver - Track & Optimize Your Subscriptions",
     description:
-      "Track all your subscriptions, streaming services, and recurring expenses in one place. Get recommendations to save money and optimize your monthly budget.",
-    siteName: "Subscription Tracker",
+      "Track all your subscriptions, streaming services, and recurring expenses in one place. Get smart recommendations to save money and optimize your monthly budget.",
+    siteName: "SmartSubSaver",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Subscription Tracker - Manage Your Monthly Expenses",
+        alt: "SmartSubSaver - Track & Optimize Your Subscriptions",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Subscription Tracker - Manage Your Monthly Expenses",
+    title: "SmartSubSaver - Track & Optimize Your Subscriptions",
     description:
-      "Track all your subscriptions, streaming services, and recurring expenses in one place. Get recommendations to save money.",
+      "Track all your subscriptions, streaming services, and recurring expenses in one place. Get smart recommendations to save money.",
     images: ["/og-image.png"],
-    creator: "@subscriptiontracker",
+    creator: "@smartsubsaver",
   },
   robots: {
     index: true,
@@ -76,8 +80,6 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "your-google-verification-code",
-    // yandex: 'your-yandex-verification-code',
-    // yahoo: 'your-yahoo-verification-code',
   },
     generator: 'v0.dev'
 }
@@ -106,10 +108,10 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebApplication",
-              name: "Subscription Tracker",
+              name: "SmartSubSaver",
               description:
-                "Track all your subscriptions, streaming services, and recurring expenses in one place. Get recommendations to save money and optimize your monthly budget.",
-              url: process.env.NEXT_PUBLIC_SITE_URL || "https://your-app.vercel.app",
+                "Track all your subscriptions, streaming services, and recurring expenses in one place. Get smart recommendations to save money and optimize your monthly budget.",
+              url: process.env.NEXT_PUBLIC_SITE_URL || "https://smartsubsaver.com",
               applicationCategory: "FinanceApplication",
               operatingSystem: "Web Browser",
               offers: {
@@ -124,7 +126,18 @@ export default function RootLayout({
                 "Analyze spending patterns",
                 "Multi-currency support",
                 "Real-time pricing updates",
+                "Netflix subscription tracking",
+                "Disney+ cost monitoring",
+                "Spotify expense tracking",
               ],
+              author: {
+                "@type": "Organization",
+                name: "SmartSubSaver",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "SmartSubSaver",
+              },
             }),
           }}
         />

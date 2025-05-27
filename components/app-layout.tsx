@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
 import BottomNav from "@/components/bottom-nav"
@@ -21,9 +20,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark">
-      <div className="min-h-screen bg-gradient-to-b from-background to-background/80 pb-32">
-        <main className="container max-w-md mx-auto p-4 pb-32">{children}</main>
+    <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <main className="pb-20">{children}</main>
         <BottomNav currentPath={pathname} />
       </div>
     </ThemeProvider>
